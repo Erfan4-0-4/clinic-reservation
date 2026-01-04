@@ -1,0 +1,1500 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Clinic",
+        "description": "API پروژه ",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/admin/appointments": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "دریافت لیست تمام نوبت‌ها (فقط ادمین)",
+                "description": "این API لیست تمام نوبت‌ها را فقط در صورتی که کاربر ادمین باشد برمی‌گرداند",
+                "operationId": "getAllAppointments",
+                "responses": {
+                    "200": {
+                        "description": "لیست نوبت‌ها با موفقیت دریافت شد",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": "1"
+                                        },
+                                        "provider_id": {
+                                            "type": "integer",
+                                            "example": "دکتر محمد صادقی"
+                                        },
+                                        "service_id": {
+                                            "type": "integer",
+                                            "example": "ویزیت دکتر عمومی"
+                                        },
+                                        "customer_id": {
+                                            "type": "integer",
+                                            "example": "حسین ملکی"
+                                        },
+                                        "appointment_date": {
+                                            "type": "string",
+                                            "format": "date",
+                                            "example": "2025-01-10"
+                                        },
+                                        "start_time": {
+                                            "type": "string",
+                                            "example": "09:00"
+                                        },
+                                        "end_time": {
+                                            "type": "string",
+                                            "example": "09:30"
+                                        },
+                                        "status": {
+                                            "type": "string",
+                                            "example": "completed"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "عدم احراز هویت"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/reports/daily": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "گزارش نوبت‌ها (فقط ادمین)",
+                "description": "دریافت گزارش نوبت‌ها به صورت مرتب‌شده بر اساس تاریخ نوبت",
+                "operationId": "getAppointmentsReport",
+                "responses": {
+                    "200": {
+                        "description": "گزارش نوبت‌ها با موفقیت دریافت شد",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "appointment_date": {
+                                                "type": "string",
+                                                "format": "date",
+                                                "example": "1404-1-15"
+                                            },
+                                            "data": {
+                                                "properties": {
+                                                    "provider_id": {
+                                                        "type": "string",
+                                                        "example": "دکتر محمدی"
+                                                    },
+                                                    "service_id": {
+                                                        "type": "string",
+                                                        "example": "ویزیت حلق و بینی"
+                                                    },
+                                                    "customer_id": {
+                                                        "type": "string",
+                                                        "example": "علی احمدی"
+                                                    },
+                                                    "start_time": {
+                                                        "type": "string",
+                                                        "example": "09:00"
+                                                    },
+                                                    "end_time": {
+                                                        "type": "string",
+                                                        "example": "09:30"
+                                                    },
+                                                    "status": {
+                                                        "type": "string",
+                                                        "example": "reserved"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "عدم دسترسی (کاربر ادمین نیست)",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "integer",
+                                            "example": 404
+                                        },
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "عدم احراز هویت"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/provider/create": {
+            "post": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "ایجاد پزشک جدید",
+                "description": "ایجاد پزشک جدید بر اساس کاربر موجود و تعیین تخصص",
+                "operationId": "CreateProvider",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "user_id",
+                                    "speciality"
+                                ],
+                                "properties": {
+                                    "user_id": {
+                                        "description": "شناسه کاربر",
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "speciality": {
+                                        "description": "تخصص پزشک",
+                                        "type": "string",
+                                        "example": "متخصص قلب و عروق"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "پزشک با موفقیت ایجاد شد",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "موفقیت"
+                                                },
+                                                "user_id": {
+                                                    "type": "string",
+                                                    "example": "دکتر احمدی"
+                                                },
+                                                "speciality": {
+                                                    "type": "string",
+                                                    "example": "متخصص قلب و عروق"
+                                                },
+                                                "is_active": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "خطای اعتبارسنجی",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string",
+                                                "example": "کاربر مورد نظر وجود ندارد"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "پزشک قبلاً ثبت شده است",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "دکتر از قبل وجود دارد"
+                                        },
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/provider/createSchedule": {
+            "post": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "ایجاد برنامه کاری پزشک",
+                "description": "ثبت برنامه کاری پزشک در روز و ساعت مشخص",
+                "operationId": "CreateProviderSchedule",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "provider_id",
+                                    "day_of_week",
+                                    "start_time",
+                                    "end_time"
+                                ],
+                                "properties": {
+                                    "provider_id": {
+                                        "description": "شناسه پزشک",
+                                        "type": "integer",
+                                        "example": 3
+                                    },
+                                    "day_of_week": {
+                                        "description": "روز هفته",
+                                        "type": "string",
+                                        "example": "1404-10-11"
+                                    },
+                                    "start_time": {
+                                        "description": "ساعت شروع",
+                                        "type": "string",
+                                        "example": "08:00"
+                                    },
+                                    "end_time": {
+                                        "description": "ساعت پایان",
+                                        "type": "string",
+                                        "example": "14:00"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "برنامه کاری با موفقیت ایجاد شد",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 7
+                                                },
+                                                "provider_id": {
+                                                    "type": "integer",
+                                                    "example": "دکتر محمد صادقی"
+                                                },
+                                                "day_of_week": {
+                                                    "type": "string",
+                                                    "example": "1404-10-11"
+                                                },
+                                                "start_time": {
+                                                    "type": "string",
+                                                    "example": "08:00"
+                                                },
+                                                "end_time": {
+                                                    "type": "string",
+                                                    "example": "14:00"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "برنامه کاری از قبل وجود دارد",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "برنامه مورد نظر از قبل وجود دارد"
+                                        },
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/reservation/create": {
+            "post": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "ایجاد نوبت جدید",
+                "description": "ایجاد نوبت برای پزشک در تاریخ و ساعت مشخص",
+                "operationId": "CreateReservation",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "provider_id",
+                                    "service_id",
+                                    "appointment_date",
+                                    "start_time",
+                                    "end_time"
+                                ],
+                                "properties": {
+                                    "provider_id": {
+                                        "description": "شناسه پزشک",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "service_id": {
+                                        "description": "شناسه سرویس",
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "appointment_date": {
+                                        "description": "تاریخ نوبت",
+                                        "type": "string",
+                                        "example": "1404-10-13"
+                                    },
+                                    "start_time": {
+                                        "description": "ساعت شروع",
+                                        "type": "string",
+                                        "example": "10:00"
+                                    },
+                                    "end_time": {
+                                        "description": "ساعت پایان",
+                                        "type": "string",
+                                        "example": "10:30"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "نوبت با موفقیت ایجاد شد",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 15
+                                        },
+                                        "provider_id": {
+                                            "type": "integer",
+                                            "example": "دکتر حسین صادقی"
+                                        },
+                                        "service_id": {
+                                            "type": "integer",
+                                            "example": "ویزیت دکتر عمومی"
+                                        },
+                                        "appointment_date": {
+                                            "type": "string",
+                                            "example": "1404-10-13"
+                                        },
+                                        "start_time": {
+                                            "type": "string",
+                                            "example": "10:00"
+                                        },
+                                        "end_time": {
+                                            "type": "string",
+                                            "example": "10:30"
+                                        },
+                                        "status": {
+                                            "type": "string",
+                                            "example": "completed"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "نوبت قبلاً ایجاد شده",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "این نوبت قبلا ایجاد شده است"
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "example": "error"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/service/create": {
+            "post": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "ایجاد ویزیت جدید",
+                "description": "ایجاد سرویس (ویزیت) جدید در صورت عدم وجود نام تکراری",
+                "operationId": "ServiceReservation",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "duration_minutes",
+                                    "price"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "description": "نام سرویس",
+                                        "type": "string",
+                                        "example": "ویزیت دکتر عمومی"
+                                    },
+                                    "duration_minutes": {
+                                        "description": "مدت زمان سرویس (دقیقه)",
+                                        "type": "string",
+                                        "example": "30 دقیقه"
+                                    },
+                                    "price": {
+                                        "description": "هزینه سرویس",
+                                        "type": "string",
+                                        "example": "150,000"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "سرویس با موفقیت ایجاد شد",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 5
+                                                },
+                                                "duration_minutes": {
+                                                    "type": "string",
+                                                    "example": "30 دقیقه"
+                                                },
+                                                "price": {
+                                                    "type": "string",
+                                                    "example": "150000"
+                                                },
+                                                "is_active": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "example": "success"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "نام سرویس تکراری است",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "نام ویزیت وارد شده از قبل وجود دارد"
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "example": "error"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/appointments/{id}": {
+            "delete": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "حذف نوبت",
+                "description": "حذف نوبت با استفاده از شناسه نوبت",
+                "operationId": "destroyReservation",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "شناسه نوبت",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 12
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "نوبت با موفقیت حذف شد",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "نوبت مورد نظر با موفقیت حذف شد"
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "example": "success"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "نوبت پیدا نشد",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "نوبت مورد نظر پیدا نشد"
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "example": "error"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/appointments": {
+            "post": {
+                "tags": [
+                    "Appointment"
+                ],
+                "summary": "رزرو نوبت",
+                "description": "رزرو یک نوبت موجود توسط کاربر لاگین‌شده",
+                "operationId": "ReserveAppointment",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "appointment_id"
+                                ],
+                                "properties": {
+                                    "appointment_id": {
+                                        "description": "شناسه نوبت",
+                                        "type": "integer",
+                                        "example": 12
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "رزرو با موفقیت انجام شد",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 12
+                                        },
+                                        "provider_id": {
+                                            "type": "integer",
+                                            "example": "دکتر محمد صادقی"
+                                        },
+                                        "customer_id": {
+                                            "type": "integer",
+                                            "example": "مهدی محمدی"
+                                        },
+                                        "appointment_date": {
+                                            "type": "string",
+                                            "example": "1404-10-13"
+                                        },
+                                        "start_time": {
+                                            "type": "string",
+                                            "example": "09:00"
+                                        },
+                                        "end_time": {
+                                            "type": "string",
+                                            "example": "09:30"
+                                        },
+                                        "status": {
+                                            "type": "string",
+                                            "example": "reserved"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "نوبت قبلاً رزرو شده یا در حال رزرو است",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "قبلا رزرو شده است"
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "example": "error"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "کاربر احراز هویت نشده است"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/appointments/{id}": {
+            "put": {
+                "tags": [
+                    "Appointment"
+                ],
+                "summary": "تغییر نوبت رزرو شده",
+                "description": "تغییر نوبت فعلی کاربر به نوبت جدید در صورت خالی بودن",
+                "operationId": "ChangeReservation",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "شناسه نوبت فعلی کاربر",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "appointment_id"
+                                ],
+                                "properties": {
+                                    "appointment_id": {
+                                        "description": "شناسه نوبت جدید برای تغییر",
+                                        "type": "integer",
+                                        "example": 25
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "نوبت با موفقیت تغییر کرد",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 25
+                                        },
+                                        "provider_id": {
+                                            "type": "integer",
+                                            "example": "دکتر محمد صادقی"
+                                        },
+                                        "customer_id": {
+                                            "type": "integer",
+                                            "example": "علی رضایی"
+                                        },
+                                        "appointment_date": {
+                                            "type": "string",
+                                            "example": "1404-10-13"
+                                        },
+                                        "start_time": {
+                                            "type": "string",
+                                            "example": "11:00"
+                                        },
+                                        "end_time": {
+                                            "type": "string",
+                                            "example": "11:30"
+                                        },
+                                        "status": {
+                                            "type": "string",
+                                            "example": "reserved"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "نوبت جدید قبلاً رزرو شده است",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "نوبت مورد نظر قبلا رزرو شده است"
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "example": "error"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "کاربر احراز هویت نشده است"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/appointments/my": {
+            "get": {
+                "tags": [
+                    "Appointment"
+                ],
+                "summary": "لیست نوبت‌های من",
+                "description": "دریافت لیست نوبت‌های رزرو شده توسط کاربر لاگین‌شده",
+                "operationId": "MyReservations",
+                "responses": {
+                    "200": {
+                        "description": "لیست نوبت‌ها با موفقیت دریافت شد",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 12
+                                            },
+                                            "provider_name": {
+                                                "type": "string",
+                                                "example": "دکتر محمد صادقی"
+                                            },
+                                            "appointment_date": {
+                                                "type": "string",
+                                                "example": "1404-10-14"
+                                            },
+                                            "start_time": {
+                                                "type": "string",
+                                                "example": "10:00"
+                                            },
+                                            "end_time": {
+                                                "type": "string",
+                                                "example": "10:30"
+                                            },
+                                            "status": {
+                                                "type": "string",
+                                                "example": "reserved"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "کاربر احراز هویت نشده است"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/auth/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "لاگین کاربر",
+                "description": "ورود کاربر با ایمیل و رمز ورود",
+                "operationId": "loginUser",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "ali@gmail.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "12345678"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Login successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "ورود با موفقیت"
+                                        },
+                                        "user": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "علی رضایی"
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "example": "ali@gmail.com"
+                                                },
+                                                "role": {
+                                                    "type": "string",
+                                                    "example": "customer"
+                                                },
+                                                "token": {
+                                                    "type": "string",
+                                                    "example": "1|eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid credentials"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
+        "/api/auth/logout": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "خروج کاربر",
+                "description": "کاربر احراز هویت شده از سیستم خارج می شود و توکن دسترسی لغو می شود",
+                "operationId": "logoutUser",
+                "responses": {
+                    "200": {
+                        "description": "Logout successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "خروج با موفقیت انجام شد"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/auth/register": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "ثبت نام کاربر جدید",
+                "description": "ثبت‌نام کاربر جدید و ایجاد توکن دسترسی",
+                "operationId": "f0e180cf2ce34bf385b5cf9d3169900d",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "علی رضایی"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "ali@gmail.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "12345678"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "user": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "علی رضایی"
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "example": "ali@gmail.com"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "errors": {
+                                            "type": "object",
+                                            "example": {
+                                                "name": [
+                                                    "تکمیل فیلد نام الزامی است"
+                                                ],
+                                                "email": [
+                                                    "تکمیل فیلد ایمیل الزامی است"
+                                                ],
+                                                "password": [
+                                                    "تکمیل فیلد گذرواژه الزامی است"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "لطفا دوباره تلاش کنید"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/provider": {
+            "get": {
+                "tags": [
+                    "Provider"
+                ],
+                "summary": "دریافت همه ارائه دهندگان",
+                "operationId": "getProvider",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "user_id": {
+                                                        "type": "string",
+                                                        "example": "دکتر علی محمدی"
+                                                    },
+                                                    "speciality": {
+                                                        "type": "string",
+                                                        "example": "دکتر عمومی"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/provider/{id}": {
+            "get": {
+                "tags": [
+                    "Provider"
+                ],
+                "summary": "دریافت ارائه دهنده با شناسه",
+                "operationId": "getProviderById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Provider ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "دکتر هاشمی"
+                                                },
+                                                "speciality": {
+                                                    "type": "string",
+                                                    "example": "متخصص حلق و بینی"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Provider not found"
+                    }
+                }
+            }
+        },
+        "/api/provider/{id}/available-slots?date=": {
+            "get": {
+                "tags": [
+                    "Provider"
+                ],
+                "summary": "دریافت تاریخ‌های در دسترس بودن ارائه‌دهنده بر اساس تاریخ دریافتی",
+                "operationId": "getProviderDatesByDay",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Provider ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "date",
+                        "in": "query",
+                        "description": "Day of week ",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "1404-10-11"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 10
+                                                    },
+                                                    "provider_id": {
+                                                        "type": "string",
+                                                        "example": "دکتر حسین محمدی"
+                                                    },
+                                                    "speciality": {
+                                                        "type": "string",
+                                                        "example": "دکتر عمومی"
+                                                    },
+                                                    "day_of_week": {
+                                                        "type": "string",
+                                                        "example": "1404-10-11"
+                                                    },
+                                                    "start_time": {
+                                                        "type": "string",
+                                                        "example": "09:00 AM"
+                                                    },
+                                                    "end_time": {
+                                                        "type": "string",
+                                                        "example": "17:00 PM"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
+        "/api/services": {
+            "get": {
+                "tags": [
+                    "Services"
+                ],
+                "summary": "دریافت ویزیت های فعال",
+                "operationId": "getActiveServices",
+                "responses": {
+                    "200": {
+                        "description": "Active services found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "ویزیت متخصص قلب و عروق"
+                                                    },
+                                                    "duration_minutes": {
+                                                        "type": "string",
+                                                        "example": "30 Min"
+                                                    },
+                                                    "price": {
+                                                        "type": "string",
+                                                        "example": "200,000"
+                                                    },
+                                                    "is_active": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No active services",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "اتمام ویزیت"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Admin",
+            "description": "Admin"
+        },
+        {
+            "name": "Appointment",
+            "description": "Appointment"
+        },
+        {
+            "name": "Auth",
+            "description": "Auth"
+        },
+        {
+            "name": "Provider",
+            "description": "Provider"
+        },
+        {
+            "name": "Services",
+            "description": "Services"
+        }
+    ],
+    "components": {
+        "securitySchemes": {
+            "BearerAuth": {
+                "type": "apiKey",
+                "name": "Authorization",
+                "in": "header",
+                "description": "Bearer {token}"
+            }
+        }
+    }
+}
